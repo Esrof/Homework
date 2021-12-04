@@ -4,6 +4,8 @@ const db = require("./database.js")
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 
+const helper = require('./utils/helper.js')
+
 app.set('view engine', 'ejs')
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'))
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'))
@@ -21,24 +23,9 @@ function setCurrentUser(req, res, next) {
     } else { return next() }
 }
 app.use(setCurrentUser)
-
-
-// function setCurrentUser(req, res, next) {
-//     if (req.session.loggedIn) {
-//         var sql = "SELECT * FROM posts WHERE id = ?"
-//         var params = [req.session.userId]
-//         db.get(sql, params, (err, row) => {
-//             if (row !== undefined) { res.locals.currentUser = row }
-//             return next()
-//         });
-//     } else { return next() }
-// }
-// app.use(setCurrentUser)
-
-
 app.get('/', (req, res) => { res.render('index', { activePage: "home" }) })
 app.get('/contact', (req, res) => { res.render('contact', { activePage: "contact" }) })
-app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost" }) })
+app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost", helper: helper }) })
 app.post('/contact', (req, res) => { res.render('contact_answer', { activePage: "contact", formData: req.body }) })
 app.get('/posts', (req, res) => {
     var sql = "SELECT * FROM posts"
@@ -51,15 +38,23 @@ app.get('/posts', (req, res) => {
         res.render('posts', { activePage: "posts", posts: rows })
     });
 })
-app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost" }) })
+app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost", helper }) })
 app.post('/npost', (req, res) => {
     var data = [
         req.body.title,
-        req.body.author,
+        req.body.userName,
         req.body.category,
-        req.body.body
+        req.body.body,
+        req.body.userId
     ]
-    var sql = "INSERT INTO posts (title, author, category, body) VALUES (?,?,?,?)"
+    console.log("test ", req)
+    if (!req.body.userName || !req.body.userId) // не создавать посты без Username и UserId 
+    {
+        res.status(400)
+        res.send("UserName UserId not found in request body")
+        return;
+    }
+    var sql = "INSERT INTO posts (title, userName, category, body, userId) VALUES (?,?,?,?,?)"
     db.run(sql, data, (err, result) => {
         if (err) {
             res.status(400)
@@ -82,10 +77,10 @@ app.get('/posts/:id/edit', (req, res) => {
     })
 })
 app.post('/posts/:id/edit', (req, res) => {
-    var sql = "UPDATE posts SET title = COALESCE(?,title), author = COALESCE(?,author), category = COALESCE(?,category), body = COALESCE(?,body) WHERE id = ?"
+    var sql = "UPDATE posts SET title = COALESCE(?,title), userName = COALESCE(?,userName), category = COALESCE(?,category), body = COALESCE(?,body) WHERE id = ?"
     var data = [
         req.body.title,
-        req.body.author,
+        req.body.userName,
         req.body.category,
         req.body.body,
         req.params.id
@@ -141,9 +136,9 @@ app.get('/posts/:id', (req, res) => {
     });
 })
 app.post('/posts/:id', (req, res) => {
-    var sql = "INSERT INTO comm (authorc, comment, id_post) VALUES (?,?,?)"
+    var sql = "INSERT INTO comm (userNamec, comment, id_post) VALUES (?,?,?)"
     var data = [
-        req.body.authorc,
+        req.body.userNamec,
         req.body.comment,
         req.params.id
     ]
@@ -183,9 +178,11 @@ app.post('/login', (req, res) => {
     db.get(sql, params, (err, row) => {
         if (err) { error = err.message }
 
-        var flcheck = row["failed_logins"]
-        if (row === undefined) { error = "Wrong email or password"; }
 
+        if (row === undefined) {
+            error = "Wrong email or password";
+        }
+        var flcheck = row && row["failed_logins"]
 
 
         if (error !== "") {
