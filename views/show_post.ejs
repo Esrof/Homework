@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>My blog</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <%- include("partials/navbar.ejs") %>
+            <h1>
+                <%- post['title'] %>
+            </h1>
+            <p>by
+                <%- post['author'] %>
+            </p>
+            <p>
+                <%- post['body'] %>
+            </p>
+            <h2>Comments:</h2>
+            <ul>
+                <% comm.forEach((comms) =>{ %>
+                    <li>
+                        <h3>
+                            by
+                            <%- comms["authorc"] %>
+                        </h3>
+                        <h4>
+                            <%- comms["comment"] %>
+                        </h4>
+                    </li>
+                    <% }) %>
+            </ul>
+            <h2>Leave comment:</h2>
+            <form action="/posts/<%- post['id'] %>" method="post">
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <label for="authorc" class="col-sm-2 col-form-label">Author</label>
+                        <div class="col-sm-10"><input type="text" class="form-control" id="authorc" name="authorc" required></div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+                        <div class="col-sm-10">
+                            <textarea name="comment" class="form-control" id="comment" rows="3" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Comment</button>
+            </form>
+
+    </div>
+    <script src="/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

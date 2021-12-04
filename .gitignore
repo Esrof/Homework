@@ -1,0 +1,4 @@
+# то что мне не нужно заливать на github
+/.vscode 
+/node_modules
+/db
