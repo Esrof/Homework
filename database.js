@@ -12,9 +12,11 @@ var db = new sqlite3.Database(DBSOURCE, (err) => {
         db.run(`CREATE TABLE posts (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			title text,
-			author text,
+			userName text,
 			category text,
-			body text
+			body text,
+            userId INTEGER,
+            image text
 			)`,
             (err) => {
                 if (err) {
@@ -25,9 +27,10 @@ var db = new sqlite3.Database(DBSOURCE, (err) => {
             });
         db.run(`CREATE TABLE comm (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			authorc TEXT,
+			userName TEXT,
 			comment TEXT,
-			id_post INTEGER
+			postId INTEGER,
+            userId 
 			)`,
             (err) => {
                 if (err) {
@@ -42,6 +45,7 @@ var db = new sqlite3.Database(DBSOURCE, (err) => {
 			email text UNIQUE,
 			password text,
 			failed_logins INTEGER,
+            image text,
 			CONSTRAINT email_unique UNIQUE (email)
 			)`,
             (err) => {
