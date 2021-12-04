@@ -5,7 +5,7 @@
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index",
+        "start": "node app.js",
         "dev": "nodemon index"
     },
     "author": "Tori_Remfer_Team <olegD35ukr@gmail.com>",
@@ -13,7 +13,7 @@
     "dependencies": {
         "bcrypt": "^5.0.1",
         "body-parser": "^1.19.0",
-        "bootstrap": "^5.1.1",
+        "bootstrap": "4.3.1",
         "ejs": "^3.1.6",
         "express": "^4.17.1",
         "express-session": "^1.17.2",
