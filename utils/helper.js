@@ -19,8 +19,10 @@ function checkIsLogin(req, res, next) { // редирект на странич�
     }
 }
 
+
 module.exports = { // передача переменных на экспорт 
     newPostSubmit,
     checkAuth,
     checkIsLogin,
+    uploadFile,
 }

@@ -6,13 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>My blog</title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link href="/css/profile.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
     <div class="container">
         <%- include("partials/navbar.ejs") %>
             <h1>Profile</h1>
-            <form method="post" action="/profile">
+
+            <div class="form-group">
+                <label for="name">Avatar</label>
+                <div class="avatar">
+                    <img src="/images/avatar.png" id="avatar" alt="Your photo">
+                </div>
+                <input value="window.base64Img" type="file" name="image" class="input" id="avatarInput" required>
+            </div>
+
+            <form method="post" action="/profile" id="form">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name" value="<%- currentUser.name %>" placeholder="John" required>
@@ -26,8 +36,14 @@
                     <label for="message">Password</label>
                     <input name="password" class="form-control" id="password" type="password" required>
                 </div>
-                <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-                <script src="/jquery/jquery.min.js"></script>
+
+                <button class="btn btn-primary" type="submit">Edit</button>
+
+            </form>
+            <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+            <script src="/jquery/jquery.min.js"></script>
+            <script type="text/javascript" src="/scripts/avatar.js"></script>
+
 </body>
 
 </html>

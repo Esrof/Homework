@@ -4,21 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>My blog</title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
+
     <div class="container">
         <%- include("partials/navbar.ejs") %>
-            <h1>Posts</h1>
+            <h1> My Posts</h1>
             <p>Total count:
                 <%- posts.lengh %>
             </p>
             <table class="table table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Title</th>
                         <th scope="col">Author</th>
                         <th scope="col">Category</th>
@@ -28,9 +27,6 @@
                 <tbody>
                     <% posts.forEach(function(post) { %>
                         <tr>
-                            <td>
-                                <%- post["id"] %>
-                            </td>
                             <td>
                                 <%- post["title"] %>
                             </td>
@@ -42,11 +38,8 @@
                             </td>
                             <td>
                                 <a href="/posts/<%- post['id'] %>" class="btn btn-primary">Show</a>
-
-                                <% if ( post['userId'] === currentUser.id ) { %>
-                                    <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
-                                    <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
-                                    <% } %>
+                                <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
+                                <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
                             </td>
                         </tr>
                         <% }) %>
@@ -54,9 +47,9 @@
             </table>
             <a href="/npost" class="btn btn-primary">Create New Post</a>
     </div>
-    <script src="/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/jquery/jquery.min.js"></script>
 </body>
 
 </html>
