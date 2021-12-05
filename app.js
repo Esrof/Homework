@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 
 const helper = require('./utils/helper')
-
 const { checkAuth, checkIsLogin } = helper; // достаем функцию из helper (через деструтуризацию)
 
 
@@ -30,8 +29,20 @@ app.use(setCurrentUser)
 //checkAuth - проверка зарегистрированогог пользователя
 
 app.get('/', checkAuth, (req, res) => { // редирект на страничку /login если пользователь не логинился 
-    res.render('index', { activePage: "home" })
-        //console.log(req.session, "req.session.loggedIn");
+    // res.render('index', { activePage: "home" })
+    // console.log(req.session, "req.session.loggedIn");
+
+    var sql = "SELECT * FROM posts WHERE userId = ?"
+    var params = [req.session.userId] // то что будет на месте "?"
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            res.status(400)
+            res.send("database error:" + err.message)
+            return;
+        }
+        res.render('index', { activePage: "home", posts: rows })
+    });
+
 })
 
 app.get('/contact', checkAuth, (req, res) => { res.render('contact', { activePage: "contact" }) })
@@ -51,12 +62,12 @@ app.get('/posts', checkAuth, (req, res) => {
 app.post('/npost', checkAuth, (req, res) => {
     var data = [
         req.body.title,
-        req.body.userName,
+        req.session.userName,
         req.body.category,
         req.body.body,
-        req.body.userId
+        req.session.userId
     ]
-    if (!req.body.userName || !req.body.userId) // не создавать посты без Username и UserId 
+    if (!req.session.userName || !req.session.userId) // не создавать посты без Username и UserId 
     {
         res.status(400)
         res.send("UserName UserId not found in request body")
@@ -221,6 +232,7 @@ app.post('/login', (req, res) => {
                 flcheck = 0;
                 req.session.userId = row["id"]
                 req.session.loggedIn = true
+                req.session.userName = row["name"] // добавляем userName в сессию для использования в post запросов 
                 res.redirect("/")
             } else {
                 error = "Your account is blocked"

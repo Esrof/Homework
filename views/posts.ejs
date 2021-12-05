@@ -35,15 +35,18 @@
                                 <%- post["title"] %>
                             </td>
                             <td>
-                                <%- post["author"] %>
+                                <%- post["userName"] %>
                             </td>
                             <td>
                                 <%- post["category"] %>
                             </td>
                             <td>
                                 <a href="/posts/<%- post['id'] %>" class="btn btn-primary">Show</a>
-                                <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
-                                <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
+
+                                <% if ( post['userId'] === currentUser.id ) { %>
+                                    <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
+                                    <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
+                                    <% } %>
                             </td>
                         </tr>
                         <% }) %>
