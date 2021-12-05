@@ -4,7 +4,10 @@ const db = require("./database.js")
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 
-const helper = require('./utils/helper.js')
+const helper = require('./utils/helper')
+
+const { checkAuth, checkIsLogin } = helper; // достаем функцию из helper (через деструтуризацию)
+
 
 app.set('view engine', 'ejs')
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'))
@@ -23,11 +26,18 @@ function setCurrentUser(req, res, next) {
     } else { return next() }
 }
 app.use(setCurrentUser)
-app.get('/', (req, res) => { res.render('index', { activePage: "home" }) })
-app.get('/contact', (req, res) => { res.render('contact', { activePage: "contact" }) })
-app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost", helper: helper }) })
-app.post('/contact', (req, res) => { res.render('contact_answer', { activePage: "contact", formData: req.body }) })
-app.get('/posts', (req, res) => {
+
+//checkAuth - проверка зарегистрированогог пользователя
+
+app.get('/', checkAuth, (req, res) => { // редирект на страничку /login если пользователь не логинился 
+    res.render('index', { activePage: "home" })
+        //console.log(req.session, "req.session.loggedIn");
+})
+
+app.get('/contact', checkAuth, (req, res) => { res.render('contact', { activePage: "contact" }) })
+app.get('/npost', checkAuth, (req, res) => { res.render('npost', { activePage: "npost" }) })
+app.post('/contact', checkAuth, (req, res) => { res.render('contact_answer', { activePage: "contact", formData: req.body }) })
+app.get('/posts', checkAuth, (req, res) => {
     var sql = "SELECT * FROM posts"
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -38,8 +48,7 @@ app.get('/posts', (req, res) => {
         res.render('posts', { activePage: "posts", posts: rows })
     });
 })
-app.get('/npost', (req, res) => { res.render('npost', { activePage: "npost", helper }) })
-app.post('/npost', (req, res) => {
+app.post('/npost', checkAuth, (req, res) => {
     var data = [
         req.body.title,
         req.body.userName,
@@ -47,7 +56,6 @@ app.post('/npost', (req, res) => {
         req.body.body,
         req.body.userId
     ]
-    console.log("test ", req)
     if (!req.body.userName || !req.body.userId) // не создавать посты без Username и UserId 
     {
         res.status(400)
@@ -64,7 +72,7 @@ app.post('/npost', (req, res) => {
         res.render('npost_answer', { activePage: "npost", formData: req.body })
     })
 })
-app.get('/posts/:id/edit', (req, res) => {
+app.get('/posts/:id/edit', checkAuth, (req, res) => {
     var sql = "SELECT * FROM posts WHERE id = ?"
     var params = [req.params.id]
     db.get(sql, params, (err, row) => {
@@ -95,7 +103,7 @@ app.post('/posts/:id/edit', (req, res) => {
     })
 })
 
-app.get('/posts/:id/delete', (req, res) => {
+app.get('/posts/:id/delete', checkAuth, (req, res) => {
     var sql = "DELETE FROM posts WHERE id = ?"
     var params = [req.params.id]
     db.get(sql, params, (err, row) => {
@@ -108,7 +116,7 @@ app.get('/posts/:id/delete', (req, res) => {
     });
 })
 
-app.get('/posts/:id', (req, res) => {
+app.get('/posts/:id', checkAuth, (req, res) => {
     var sql_posts = "SELECT * FROM posts WHERE id = ?"
     var sql_comm = "SELECT * FROM comm WHERE id_post = ?"
     var params = [req.params.id]
@@ -135,7 +143,7 @@ app.get('/posts/:id', (req, res) => {
         res.render('show_post', data);
     });
 })
-app.post('/posts/:id', (req, res) => {
+app.post('/posts/:id', checkAuth, (req, res) => {
     var sql = "INSERT INTO comm (userNamec, comment, id_post) VALUES (?,?,?)"
     var data = [
         req.body.userNamec,
@@ -151,7 +159,7 @@ app.post('/posts/:id', (req, res) => {
         res.redirect('/posts/' + req.params.id)
     })
 })
-app.get('/register', (req, res) => { res.render('register', { activePage: "register" }) })
+app.get('/register', checkIsLogin, (req, res) => { res.render('register', { activePage: "register" }) })
 app.post('/register', (req, res) => {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         var data = [
@@ -170,7 +178,7 @@ app.post('/register', (req, res) => {
         });
     });
 })
-app.get('/login', (req, res) => { res.render('login', { activePage: "login", error: "" }) })
+app.get('/login', checkIsLogin, (req, res) => { res.render('login', { activePage: "login", error: "" }) })
 app.post('/login', (req, res) => {
     var sql = "SELECT * FROM users WHERE email = ?"
     var params = [req.body.email]
@@ -222,19 +230,12 @@ app.post('/login', (req, res) => {
         });
     })
 })
-app.get('/logout', (req, res) => {
+app.get('/logout', checkAuth, (req, res) => {
     req.session.userId = null
     req.session.loggedIn = false
     res.redirect("/login")
 })
 
-function checkAuth(req, res, next) {
-    if (req.session.loggedIn) {
-        return next()
-    } else {
-        res.redirect('/login')
-    }
-}
 app.get('/profile', checkAuth, (req, res) => { res.render('profile', { activePage: "profile" }) })
 app.post('/profile', (req, res) => {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
