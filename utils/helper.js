@@ -24,5 +24,4 @@ module.exports = { // передача переменных на экспорт
     newPostSubmit,
     checkAuth,
     checkIsLogin,
-    uploadFile,
 }

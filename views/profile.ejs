@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label for="name">Avatar</label>
                 <div class="avatar">
-                    <img src="/images/avatar.png" id="avatar" alt="Your photo">
+                    <img src=<%- currentUser.image ? "/files/" + currentUser.image : "/images/avatar.png" %> id="avatar" alt="Your photo">
                 </div>
                 <input value="window.base64Img" type="file" name="image" class="input" id="avatarInput" required>
             </div>

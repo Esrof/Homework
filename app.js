@@ -281,20 +281,36 @@ app.post('/profile', (req, res) => { // принимаем post-запрос
     });
 })
 
-app.post('/upload', function(req, res) {
-    if (!req.files || Object.keys(req.files).length === 0) {
+app.post('/upload', function(req, res) { // req - приходит от клиента  на сервер // res - от сервера к клиенту 
+    console.log("req.files", req.files)
+    if (!req.files || !req.files.image) { // проверка на загрузку картинки 
         return res.status(400).send('No files were uploaded.');
     }
 
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.image;
+    let image = req.files.image; // image который пришел помещаем в переменную image
 
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv('/files/' + req.files[0].name, function(err) {
-        if (err)
+    //Use the mv() method to place the file somewhere on your server
+    image.mv(__dirname + '/public/files/' + req.files.image.name, function(err) { // (путь к корню сервера + "путь к папке где хранятся картинки " + имя картинки  )
+        var sql = "UPDATE users SET  image = COALESCE(?,image) WHERE id = ?" // формируем sql строку 
+        var data = [ // формируем data для запроса 
+            req.files.image.name,
+            req.session.userId
+        ]
+
+        if (err) // ошибка 
             return res.status(500).send(err);
 
-        res.send('File uploaded!');
+        db.run(sql, data, (err, result) => { // запрос в базу данных  используя sql строку и data
+
+            if (err) { // обрабатываем ошибку 
+                res.status(400) // устанока статуса ошибки 
+                res.send("database error:" + err.message) // текст ошибки 
+                return;
+            }
+
+            res.send('File uploaded!');
+        });
     });
 });
 const PORT = process.env.PORT || 3000
