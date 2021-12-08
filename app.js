@@ -36,8 +36,12 @@ app.use(setCurrentUser)
 app.get('/', checkAuth, (req, res) => { // вывод всех постов на станицу home
     // res.render('index', { activePage: "home" })
     // console.log(req.session, "req.session.loggedIn");
-
+    let search = req._parsedOriginalUrl.query && req._parsedOriginalUrl.query.split("=")
     var sql = "SELECT * FROM posts"
+    if (search && search[0] === "search" && search[1]) {
+        sql += ` WHERE userName LIKE "${search[1]}%"`
+    }
+
     db.all(sql, [], (err, rows) => {
         if (err) {
             res.status(400)
@@ -267,7 +271,8 @@ app.post('/profile', (req, res) => { // принимаем post-запрос
         var data = [ // формируем data для запроса 
             req.body.name, // достаем name из body из запроса 
             req.body.email,
-            hash
+            hash,
+            req.session.userId
         ]
         var sql = "UPDATE users SET name = COALESCE(?,name), email = COALESCE(?,email), password = COALESCE(?,password) WHERE id = ?" // формируем sql строку 
         db.run(sql, data, (err, result) => { // запрос в базу данных  используя sql строку и data

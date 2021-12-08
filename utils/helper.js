@@ -1,7 +1,3 @@
-function newPostSubmit(event) {
-    console.log(event)
-}
-
 function checkAuth(req, res, next) { // редирект на страничку /login если пользователь не логинился 
     if (req.session.loggedIn) {
         return next()
@@ -21,7 +17,6 @@ function checkIsLogin(req, res, next) { // редирект на странич�
 
 
 module.exports = { // передача переменных на экспорт 
-    newPostSubmit,
     checkAuth,
     checkIsLogin,
 }

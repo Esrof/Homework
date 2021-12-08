@@ -2,6 +2,8 @@
 
 let form = document.getElementById('form') //находим form
 
+
+
 let avatarImage = document.getElementById('avatar') // находим Image по id
 console.log("avatarImage", avatarImage)
 
