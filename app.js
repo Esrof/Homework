@@ -141,7 +141,7 @@ app.get('/posts/:id/delete', checkAuth, (req, res) => { // удаление за
 
 app.get('/posts/:id', checkAuth, (req, res) => { // отображение страницы с комментариями 
     var sql_posts = "SELECT * FROM posts WHERE id = ?"
-    var sql_comm = "SELECT * FROM comm WHERE id_post = ?"
+    var sql_comm = "SELECT * FROM comm WHERE postId = ?"
     var params = [req.params.id]
     var data = {
         activePage: 'posts',
@@ -168,9 +168,9 @@ app.get('/posts/:id', checkAuth, (req, res) => { // отображение ст�
 })
 
 app.post('/posts/:id', checkAuth, (req, res) => { // полученые комментарии записываються в БД
-    var sql = "INSERT INTO comm (userNamec, comment, id_post) VALUES (?,?,?)"
+    var sql = "INSERT INTO comm (userName, comment, postId) VALUES (?,?,?)"
     var data = [
-        req.body.userNamec,
+        req.session.userName,
         req.body.comment,
         req.params.id
     ]

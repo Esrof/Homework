@@ -26,7 +26,7 @@
                     <li>
                         <h3>
                             by
-                            <%- comms["authorc"] %>
+                            <%- comms["userName"] %>
                         </h3>
                         <h4>
                             <%- comms["comment"] %>
@@ -37,10 +37,6 @@
             <h2>Leave comment:</h2>
             <form action="/posts/<%- post['id'] %>" method="post">
                 <div class="form-group row">
-                    <div class="form-group row">
-                        <label for="authorc" class="col-sm-2 col-form-label">Author</label>
-                        <div class="col-sm-10"><input type="text" class="form-control" id="authorc" name="authorc" required></div>
-                    </div>
                     <div class="form-group row">
                         <label for="comment" class="col-sm-2 col-form-label">Comment</label>
                         <div class="col-sm-10">
