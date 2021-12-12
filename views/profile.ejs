@@ -10,39 +10,44 @@
 </head>
 
 <body>
+
     <div class="container">
         <%- include("partials/navbar.ejs") %>
-            <h1>Profile</h1>
+            <h1 class="display-4">Silence: Profile </h1>
+            <p class="lead"></p>
+    </div>
 
+    <div class="container">
+
+        <div class="form-group">
+            <label for="name">Avatar</label>
+            <div class="avatar">
+                <img src=<%- currentUser.image ? "/files/" + currentUser.image : "/images/avatar.png" %> id="avatar" alt="Your photo">
+            </div>
+            <input value="window.base64Img" type="file" name="image" class="input" id="avatarInput" required>
+        </div>
+
+        <form method="post" action="/profile" id="form">
             <div class="form-group">
-                <label for="name">Avatar</label>
-                <div class="avatar">
-                    <img src=<%- currentUser.image ? "/files/" + currentUser.image : "/images/avatar.png" %> id="avatar" alt="Your photo">
-                </div>
-                <input value="window.base64Img" type="file" name="image" class="input" id="avatarInput" required>
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control" id="name" value="<%- currentUser.name %>" placeholder="John" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" name="email" class="form-control" id="email" value="<%- currentUser.email %>" placeholder="name@example.com" required>
             </div>
 
-            <form method="post" action="/profile" id="form">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" class="form-control" id="name" value="<%- currentUser.name %>" placeholder="John" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" name="email" class="form-control" id="email" value="<%- currentUser.email %>" placeholder="name@example.com" required>
-                </div>
+            <div class="form-group">
+                <label for="message">Password</label>
+                <input name="password" class="form-control" id="password" type="password" required>
+            </div>
 
-                <div class="form-group">
-                    <label for="message">Password</label>
-                    <input name="password" class="form-control" id="password" type="password" required>
-                </div>
+            <button class="btn btn-primary mt-3" type="submit">Edit</button>
 
-                <button class="btn btn-primary" type="submit">Edit</button>
-
-            </form>
-            <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-            <script src="/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="/scripts/avatar.js"></script>
+        </form>
+        <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/scripts/avatar.js"></script>
 
 </body>
 

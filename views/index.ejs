@@ -12,61 +12,33 @@
 
     <div class="container">
         <%- include("partials/navbar.ejs") %>
-            <!-- <div class="jumbotron">
-                <h1 class="display-4">My Blog</h1>
-                <p class="lead">This is a Node JS based blog.</p>
-                <hr class="my-4">
-            </div> -->
+            <h1 class="display-4">Silence: All posts </h1>
+            <p class="lead"></p>
     </div>
 
     <div class="container">
-        <h1>All posts</h1>
+        <!-- <h1>All posts</h1> -->
         <p>Total count:
             <%- posts.length %>
         </p>
-
         <div class="container">
             <%- include("partials/inputSearch.ejs") %>
         </div>
 
+        <div class="row row-cols-1 row-cols-md-2 ">
+            <div class="col">
+                <% posts.slice(0, Math.round(posts.length/2)).forEach(function(post) { %>
+                    <%- include("partials/postCards.ejs", {post,isEditable:false}) %>
 
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <!-- <th scope="col">#</th> -->
-                    <th scope="col">Title</th>
-                    <th scope="col">Author</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% posts.forEach(function(post) { %>
-                    <tr>
-                        <!-- <td>
-                            <%- post["id"] %>
-                        </td> -->
-                        <td>
-                            <%- post["title"] %>
-                        </td>
-                        <td>
-                            <%- post["userName"] %>
-                        </td>
-                        <td>
-                            <%- post["category"] %>
-                        </td>
-                        <td>
-                            <a href="/posts/<%- post['id'] %>" class="btn btn-primary">Show</a>
+                        <% }) %>
+            </div>
+            <div class="col">
+                <% posts.slice(Math.round(posts.length/2)).forEach(function(post) { %>
+                    <%- include("partials/postCards.ejs", {post,isEditable:false}) %>
 
-                            <% if ( post['userId'] === currentUser.id ) { %>
-                                <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
-                                <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
-                                <% } %>
-                        </td>
-                    </tr>
-                    <% }) %>
-            </tbody>
-        </table>
+                        <% }) %>
+            </div>
+        </div>
     </div>
     <script src="/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>

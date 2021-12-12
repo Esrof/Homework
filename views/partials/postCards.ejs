@@ -1,0 +1,25 @@
+<div class="card mb-3">
+    <div class="card-body">
+
+        <h5 class="card-title">
+            <%- post["title"] %>
+        </h5>
+
+        <h6 class="card-subtitle mb-2 text-muted">
+            <%- post["userName"] %>
+        </h6>
+
+        <h6 class="card-subtitle mb-2 text-muted">
+            <%- post["category"] %>
+        </h6>
+        <p class="card-text">
+            <%- post["body"] %>
+        </p>
+
+        <a href="/posts/<%- post['id'] %>" class="btn btn-primary">Show</a>
+        <% if ( isEditable) { %>
+            <a href="/posts/<%- post['id'] %>/edit" class="btn btn-primary">Edit</a>
+            <a href="/posts/<%- post['id'] %>/delete" class="btn btn-primary">Delete</a>
+            <% } %>
+    </div>
+</div>

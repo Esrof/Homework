@@ -15,8 +15,7 @@ var db = new sqlite3.Database(DBSOURCE, (err) => {
 			userName text,
 			category text,
 			body text,
-            userId INTEGER,
-            image text
+            userId INTEGER
 			)`,
             (err) => {
                 if (err) {
